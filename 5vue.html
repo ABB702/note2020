@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!--1、导入Vue的包-->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+    <style>
+        /*在样式表里设置：只要是有 v-cloak 属性的标签，我都让它隐藏。
+         直到 Vue实例化完毕以后，v-cloak 会自动消失，那么对应的css样式就会失去作用，最终将span中的内容呈现给用户 */
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!--这个div区域就是MVVM中的 View-->
+    <div id="div1">
+        {{name1}}
+        <br>
+        <!-- 加上 v-bind 之后，value里的值是 Vue 里的变量 -->
+        <input id="div2" type="text" v-bind:value="name2"><br>
+        <!-- 超链接后面的path是 Vue 里面的变量 -->
+        <a id="div3" v-bind="{href:'http://www.baidu.com/'+path}">超链接</a><br>
+
+        <button id="div4" v-on:click="change">XX</button>
+        <!--简写 @click -->
+    </div>
+
+    <span id="div5" v-text="name3">name</span><!-- 而v-html容易导致 XSS（跨站脚本）攻击-->
+
+    <input type="text" v-model="n2">
+    <!--双向绑定-->
+    <li v-for="item in list">{{item}}</li>
+    <li v-for="(item,index) in arr1">值：{{item}} --- 索引：{{index}}</li>
+    <li v-for="(value,key,index) in obj1">值：{{value}} --- 键：{{key}} --- index：{{index}} </li>
+    <!--index不是必须-->
+    <li v-for="count in 10">{{count}}</li>
+    <p v-for="item in list" :key="item.id">
+        <!--每次 for 循环的时候，通过指定 key 来标示当前循环这一项的**唯一身份**-->
+        <input type="checkbox">{{item.id}} --- {{item.name}}
+    </p>
+    <div v-if="isShow">我是盒子</div>
+    <!--每次都会重新添加/删除DOM元素-->
+    <!-- v-show只是控制添加style="display:none" -->
+    @keyup.enter="addData"
+
+    
+</body>
+
+<script>
+    // 2、创建一个Vue的实例
+    //new出来的对象就是MVVM中的 View Module（调度者）
+    var myVue1 = new Vue({
+        el: '#div1', //当前vue对象将接管上面的div1区域
+        data: {//data就是MVVM中的 module
+            name1: 'smyhvae'
+        }
+
+    });
+    var myVue2 = new Vue({
+        el: '#div2',
+        data: {
+            name2: 'smyhvae2'
+        }
+    });
+    var myVue3 = new Vue({
+        el: '#div3',
+        data: {
+            path: '1.html'
+        }
+    });
+    var myVue4 = new Vue({
+        el: '#div4',
+        data: { name4: 'kkk' },
+        methods: {
+            change: function () { //上面的button按钮的点击事件
+                myVue1.data.name1 += '1';
+            }
+        }
+    });
+    var vm = new Vue({//无闪烁问题，会覆盖标签里所有内容
+        el: '#div5',
+        data: {
+            name3: 'hello smyhvae'
+        }
+    });
+    //插值表达式 {{}} n内容自动更新，只能放单个表达式
+
+    //普通函数：根据调用我的人（谁调用我，我的this就指向谁）
+    //箭头函数：根据所在的环境（我在哪个环境中，this就指向谁）
+    //事件修饰符
+    - `.stop`  阻止冒泡。本质是调用 event.stopPropagation() 。
+    - `.prevent`  阻止默认事件（默认行为）。本质是调用 event.preventDefault() 。
+    - `.capture`  添加事件监听器时，使用捕获的方式（也就是说，事件采用捕获的方式，而不是采用冒泡的方式）。
+    - `.self`  只有当事件在该元素本身（比如不是子元素）触发时，才会触发回调。
+    - `.once`  事件只触发一次。
+    - `.{keyCode | keyAlias}`   只当事件是从侦听器绑定的元素本身触发时，才触发回调。
+    - `.native` 监听组件根元素的原生事件。
+
+    //list做查改表
+
+    //<p>{{ msg | msgFormat('XXX') }}</p>
+    // 定义一个 Vue 全局的过滤器，名字叫做  msgFormat
+    Vue.filter('msgFormat', function (myMsg,args) {
+        // 字符串的  replace 方法，第一个参数，除了可写一个 字符串之外，还可以定义一个正则
+        //将 myMsg 中的所有`单纯`字样，修改为`邪恶`
+        return myMsg.replace(/单纯/g, '邪恶')
+    })
+
+    // 创建 Vue 实例，得到 ViewModel
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            msg: '曾经，我也是一个单纯的少年，单纯的我，傻傻的问，谁是世界上最单纯的男人'
+        },
+        methods: {}
+    });
+
+    String.prototype.padStart(maxLength, fillString='');//時間補充
+
+    //<input type="text" id="search" v-model="name" v-color="'green'">
+    //自定义全局指令 v-color：设置DOM元素的color属性
+    Vue.directive('color', {
+            // 样式，只要通过指令绑定给了元素，不管这个元素有没有被插入到页面中去，这个元素肯定有了一个内联的样式
+            // 将来元素肯定会显示到页面中，这时候，浏览器的渲染引擎必然会解析样式，应用给这个元素
+            // 意思是说，我们可以把样式的代码写到bind中去（即使这个时候，dom元素还没有被创建）
+            bind: function (el, binding) { // 每当指令绑定到元素上的时候，会立即执行这个 bind 函数，【只执行一次】
+
+                console.log(binding.name); //打印结果：color
+                console.log(binding.value); //打印结果：green
+                console.log(binding.expression);  //'green'
+
+                el.style.color = binding.value// 通过bining拿到v-color中传递过来的值
+
+            },
+            inserted: function (el) {  // inserted 表示元素 插入到DOM中的时候，会执行 inserted 函数【触发1次】
+                // 和JS行为有关的操作，最好在 inserted 中去执行，防止 JS行为不生效
+                //el.focus()
+            },
+            updated: function (el) {  // 当VNode更新的时候，会执行 updated， 【可能会触发多次】
+            }
+        })
+
+    //vue-resource.js向Vue身上挂载了this.$http这个属性。于是，我们可以直接写this.$http.get或者this.$http.post或者this.$http.jsonp来调用。
+    this.$http.get('http://vueapi.ittun.com/api/getprodlist').then(function(response){}
+    this.$http.post(url, { name: '奔驰' }, { emulateJSON: true })
+    this.$http.get('http://vueapi.ittun.com/api/delproduct/' + id).then(function (response) {}//delete
+    this.$http.jsonp('http://vuecms.ittun.com/api/getlunbo?id=1').then(function (response) {}//用script标签的src属性，代表api接口的url,繞開默认不允许Ajax发起跨域請求
+    Vue.http.options.root = 'http://smyhvae/';//請求的全局路徑
+
+    <transition name="my">
+            <h3 v-if="flag">这是一个H3</h3>
+    </transition>
+    //style里：
+    .my-enter,.my-leave-to {opacity: 0;transform: translateX(80px);}
+    .my-enter-active,.my-leave-active { transition: all 1s ease;}
+    //調用
+    //<transition enter-active-class="animated bounceIn" leave-active-class="animated bounceOut" :duration="500">...</transition>
+    //动画钩子函数
+    //<transition @before-enter="beforeEnter" @enter="enter" @after-enter="afterEnter">
+        methods: {
+                beforeEnter(el) {
+                    el.style.transform = "translate(0, 0)"   // smyhvae提示：一开始的时候，让小球处于（0，0）的位置
+                },
+                enter(el, done) {
+                    el.offsetWidth
+                    el.style.transform = "translate(150px, 300px)" // smyhvae 提示：让小球从（0，0）移动到 (150px, 300px)
+                    el.style.transition = 'all 1s ease'
+                    // 【注意2】这里的 done， 起始就是 afterEnter 这个函数，也就是说：done 是 afterEnter 函数的引用
+                    done()
+                },
+                afterEnter(el) {
+                    this.flag = !this.flag  // 因为最开始的时候，小球就是处于消失的状态，这行代码可以让小球的动画重新开始
+                }
+            }
+    // <transition-group appear tag="ul" >会渲染出元素节点 transition-group 的元素必须指定key 属性
+    //         <li v-for="(item, i) in list" :key="item.id" @click="del(i)">
+    //             {{item.id}} --- {{item.name}}
+    //         </li>
+    //</transition-group>
+
+    //組件1,2
+    <div id="app">
+        <!-- 如果要使用组件，直接把组件的名称，以 HTML 标签的形式，引入到页面中，即可 -->
+        <account> </account>
+    </div>
+        //第一步：使用 Vue.extend 定义组件
+        var myAccount = Vue.extend({
+            template: '<div><h2>登录页面</h2> <h3>注册页面</h3></div>' // 通过 template 属性，指定了组件要展示的HTML结构。template 是 Vue 中的关键字，不能改。
+        });
+        //第二步：使用 Vue.component 注册组件
+        // Vue.component('组件的名称', 创建出来的组件模板对象)
+        Vue.component('account', myAccount); //第一个参数是组件的名称（标签名），第二个参数是模板对象
+
+        // Vue.component('account', {
+        //     template: '<div><h2>登录页面</h2> <h3>注册页面</h3></div>'   // template 是 Vue 中的关键字，不能改。
+        // });
+        new Vue({
+            el: '#app'
+        });
+
+        //組件3
+    <!-- 定义模板 -->
+    <template id="myAccount">
+        <div>
+            <h2>登录页面</h2>
+            <h3>注册页面</h3>
+        </div>
+    </template>
+
+    <div id="app">
+        <!-- 使用组件 -->
+        <account> </account>
+    </div>
+        //定义、注册组件
+        Vue.component('account', {
+            template: '#myAccount'    // template 是 Vue 中的关键字，不能改。
+        });
+
+        new Vue({
+            el: '#app'
+        });
+
+        //私有組件
+        new Vue({
+            el: '#app',
+            data: {msg:'XXX'},
+            components: { // 定义、注册Vue实例内部的私有组件
+                myLogin: {
+                    template: '<h3>这是私有的login组件</h3>',
+                    props: ['parentMsg'],//利用:parentMsg='msg'接受父屬性-需綁定-readonly
+                    methods: {
+                        childClick() {
+                            this.$emit('parent-show');//利用@parent-show綁定父親show(){}，這裡再調用parent-show事件
+                            this.$emit('parent-show', 'child 123', 'child 789');//調用父方法的時候傳值，實現子值父用
+                        }
+                    }
+                }
+            }
+
+        });
+        //兄弟组件监听与触发
+        var hub = new Vue();//提供事件中心
+        hub.$on('eventname',(para)=>{});
+        hub.$emit('eventname',para);
+        hub.$off('eventname');
+
+        //插槽
+        slot
+        
+        //为组件添加 data 和 methods
+        //组件中的data，不再是对象，而是一个方法,还必须返回一个对象---独立的数据存储
+        var dataObj = {count:0};
+        data: function () {
+                return {
+                    myData: 'smyhvae',
+                    return dataObj //当我们return全局的dataObj的时候，子组件们会共享这个dataObj
+                    //return { count: 0 } // 【重要】return一个**新开辟**的对象数据 此時不共享
+                }
+            },
+        //切換
+        //<component :is="comName"></component>
+        comName: 'login' // 当前 component 中的 :is 绑定的组件的名称，vue中綁定
+        //<transition mode="out-in"><transition>//它表示第一个组件消失之后，第二个组件才会出现。
+        
+        //<h3 id="myH3" ref="myTitle"> 今天天气太好了</h3>
+        console.log(this.$refs.myTitle.innerText)
+
+beforeCreate：实例刚在内存中被创建出来，此时，还没有初始化好 data 和 methods 属性
+created：实例已经在内存中创建OK，此时 data 和 methods 已经创建OK，此时还没有开始 编译模板。我们可以在这里进行Ajax请求。
+beforeMount：此时已经完成了模板的编译，但是还没有挂载到页面中
+mounted：此时，已经将编译好的模板，挂载到了页面指定的容器中显示。（mounted之后，表示真实DOM渲染完了，可以操作DOM了）
+beforeUpdate
+updated
+beforeDestroy
+destroyed
+    </script>
+
+    
+
+</html>

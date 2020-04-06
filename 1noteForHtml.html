@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="50000;http://www.baidu.com"><!--50s后跳转-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><!--视口-->
+    <meta name="Keywords" content="网易,邮箱,游戏,新闻,体育,娱乐,女性,亚运,论坛,短信" /><!--关键词-->
+    <meta name="Description" content="网易是中国领先的互联网技术公司，"><!--页面描述-->
+    <title>网页标题</title>
+    <base href="/"><!--基础路径-->
+</head>
+<body link = "blue" alink="green" vlink="red"><!--其中的链接在点击前中后的颜色-->
+    <p align="center">sentence1</p>
+    <p> <em>强调</em>   
+        <b>加粗</b> 
+        <i>斜体</i> 
+        <u>下划线</u> 
+        <del>中划线</del>  
+        <a href="http://www.baidu.com" title="悬停文本" name="weizhi1" target="_top">链接</a><!--_self：在同一个网页中显示（默认值）
+                                                                                        _blank：在新的窗口中打开。
+                                                                                        _parent：在父窗口中显示
+                                                                                        _top：在顶级窗口中显示-->
+        <a href="页面.html">链接</a>
+        <a href="#weizhi1">链接1</a><!--存疑-->
+        <img src="1.jpg" alt="替换资源"/><!--USEMAP属性实现局部图片链接-->
+    </p>
+    
+    <pre>保留 空格和空行</pre>
+    <p>&nbsp;、&lt;、&gt;、&copy;</p>
+    <ul>
+        <li>li是容器级</li>
+    </ul>
+    <dl>
+        <dt>描述</dt>
+        <dd>内容</dd>
+    </dl>
+    <table border="1"  style="border-collapse:collapse;">
+        <caption>title</caption>
+        <tr><!--一行-->
+            <td colspan="2"></td><!--横向合并-->
+            <td rowspan="2"></td><!--纵向合并-->
+        </tr>
+    </table>
+    <!-- 表格的<thead>标签、<tbody>标签、<tfoot>标签   数据可以边获取边显示 -->
+    <!--
+        与Body二选一的frame
+        <frameset rows="20%,*">
+            <frame src = "uppage.html" scrolling="no" noresize name = "uppage"></frame>  
+                    //name配合<a href=XX.html target = "uppage">使用//在uppage位置打开XX页面
+            <frame src = "downpage.html"></frame>
+        </frameset>
+    -->
+    <iframe src = "page.html"></iframe>
+    <form><!--get少量和post大量两种方式提交  Enctype加密post限定-->
+        <fieldset>
+        <legend>账号信息</legend>
+            名字：<input type="text" value="name" disabled=""><br> 
+            密码：<input type="password" value="pwd" size="50"><br> 
+        </fieldset>
+        性别：<input type="radio" name="gender" id="radio1" value="male" checked=""><label for="radio1">男</label><!--这里是id和for匹配--> <input type="radio" name="gender" id="radio2" value="female" >女<br> 
+        爱好：<input type="checkbox" name="love" value="eat">吃饭 <input type="checkbox" name="love" value="sleep">睡觉 <input type="checkbox" name="love" value="bat">打豆豆
+    </form>
+    <form> 
+        <input type="button" value="普通按钮" /><br> 
+        <input type="submit" value="提交按钮" /><br> 
+        <input type="reset" value="重置按钮" /><br> 
+        <input type="image" src="1.jpg" width="800" value="图片按钮2" /><br> 
+        <input type="file" value="文件选择框" /> 
+        <select size="3" multiple="">
+            <option>小学</option>
+            <option>初中</option>
+            <option>高中</option>
+            <option>大学</option>
+            <option selected="">研究生</option>
+        </select>
+        <textarea name="txtInfo" rows="4" cols="20">默认文字</textarea>
+    </form>
+    <!--多媒体-->
+    <embed src="helloworld.swf" /><!--标签定义嵌入的内容，比如插件。-->
+    <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" 
+        codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" 
+        width="778" height="202"> 
+        <param name="movie" value="images/banner.swf"> 
+        <param name="quality" value="high"> 
+        <param name="wmode" value="transparent">
+        <embed src="images/banner.swf" width="778" height="202" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" wmode="transparent"></embed> 
+    </object>
+    <marquee behavior="alternate" direction="left" width="300" height="200" bgcolor="#8c5dc1">我来了</marquee><!--滚动字幕-->
+
+</body>
+</html>

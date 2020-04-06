@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style type="text/css">
+    .animate {
+            position: absolute;
+            left: 0;
+            bottom: -80px;/*浮动到0PX*/
+            width: 100%;
+            height: 80px;
+            background-color: #ff6700;
+           
+            transition: all .5s linear 0s;/*过渡属性，持续，运动曲线，延迟*/
+            
+            transform: scale(2, 0.5);/*缩放*/
+            
+            transform: translate(-50%, -50%);/*位移*/
+            transform: translateX(100px); 
+            
+            transform: rotate(45deg);/*旋转*/
+            transform-origin: 50px 50px;/*旋转中心*/
+            transform: rotateY(360deg);    /*绕 Y 轴旋转360度 */   /*  perspective: 110px; 透视  */
+
+            /* 调用动画*/
+            /* animation: 动画名称 持续时间  执行次数  是否反向  运动曲线 延迟执行。infinite 表示无限次*/
+            /*animation: move 1s  alternate linear 3; steps(n)做动画*/
+            animation: move2 4s;
+               
+        }
+    /* 方式一：定义一组动画；另外一种是过程百分比*/
+    @keyframes move2 {
+            from {
+                transform: translateX(0px) rotate(0deg);
+            }
+            to {
+                transform: translateX(500px) rotate(555deg);
+            }
+    }
+
+    ul{
+        display: flex;
+    }
+    section:nth-child(1) ul{
+        /* 主轴对齐方式：从主轴开始的方向对齐*/
+        justify-content: flex-start;
+        /* 侧轴对齐方式 ：居中*/
+        align-items:center;
+    }
+    section:nth-child(1) ul li:nth-child(1){
+        flex:1;
+    }
+    </style>
+</head>
+<body>
+    <div class="animate"></div>
+    <div class="flexBox">
+        <section>
+            <h3>主轴的对齐方式：justify-content:flex-start</h3>
+            <ul>
+                <li>1</li>
+                <li>2</li>
+                <li>3</li>
+            </ul>
+        </section>
+        <!--使用 display:flex 或 display:inline-flex 声明一个父容器为弹性盒子。
+            此时，这个父容器里的子元素们，会遵循弹性布局。-->
+    </div>
+    
+    <script type="text/javascript">
+		// 在这里写 js 代码
+		alert('千古壹号的方式2');
+		console.log('qianguyihao 方式2');
+    </script>
+    <script src="tool.js"></script>
+</body>
+</html>

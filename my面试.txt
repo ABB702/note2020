@@ -1,0 +1,277 @@
+面试题总结：
+1.http状态码：
+1xx：指示信息--表示请求已接收，继续处理。
+2xx：成功--表示请求已被成功接收、理解、接受。
+3xx：重定向--要完成请求必须进行更进一步的操作。
+    304：资源未修改，客户端会直接使用缓存的资源
+4xx：客户端错误--请求有语法错误或请求无法实现。
+    3拒绝4不存在
+5xx：服务器端错误--服务器未能实现合法的请求。
+
+2.cookie
+4k,服务器端产生，可添加到http头，现在还有localStorage（永久存）
+Session是在服务端保存的一个数据结构，用来跟踪用户的状态，这个数据可以保存在集群、数据库、文件中；
+Cookie是客户端保存用户信息的一种机制，用来记录用户的一些信息，也是实现Session的一种方式。
+
+3.可见性
+opacity :0仍然触发事件
+display：none不占位置
+visibility :hidden继承可被覆盖
+
+4.排序
+冒泡 选择 插入 n^2
+希儿 归并 快排 堆排 nlogn
+    var quickSort = function(arr) {
+        if (arr.length <= 1) { return arr; }
+        var pivotIndex = Math.floor(arr.length / 2);   //基准位置（理论上可任意选取）
+        var pivot = arr.splice(pivotIndex, 1)[0];  //基准数
+        var left = [];
+        var right = [];
+        for (var i = 0; i < arr.length; i++){
+            if (arr[i] < pivot) {
+                left.push(arr[i]);//偷懒！
+            } else {
+                right.push(arr[i]);
+            }
+        }
+        return quickSort(left).concat([pivot], quickSort(right));  //链接左数组、基准数构成的数组、右数组
+    };
+
+5.七层模型
+应用 ：应用，表示，会话
+传输
+IP层 ：网络
+网络接口 ：数据链路，物理
+
+6.get post区别
+本质上就是TCP链接，并无差别 get一个包，post两个包100continue200OK
+get请求会被浏览器主动缓存，而post不会。
+浏览器在回退时，get不会重新请求，但是post会重新请求
+
+7.回调地狱
+函数作为参数层层嵌套
+
+8.https
+client拿到公钥，生成client key，用公钥非对称后发给server，server将内容对称后发回
+http报文：请求（请求方法+URL+协议+报文头+报文体），响应（协议+状态码和状态描述+头+体）
+get post put delete head
+
+9.盒模型
+标准盒和IE盒；
+设置：box-sizing:content-box;border-box;
+获取样式window.getComputedStyle(element).width/height;
+
+10.margin塌陷/margin重叠
+竖直方向公用，父子加border:1px solid red可解决，最好padding
+
+11.BFC
+产生：overflow:hidden;float;absolute;flex
+BFC内子元素，垂直方向边距重叠；
+内外不影响；
+BFC不与float box重叠；
+BFC的高度子元素float box也参与计算
+
+12.DOM标准
+DOM0：e.onclick
+DOM2:e.addEventListener('click',function(){},true);
+DOM3:e.addEventListener('keyup',function(){},true);
+
+13.DOM事件流
+捕获阶段，事件依次传递的顺序是：window --> 【document --> html--> body 】--> 父元素、子元素、目标元素。
+    event.preventDefault();event.stopPropagation();
+event.currentTarget   //当前所绑定的事件对象。在事件委托中，指的是【父元素】。
+event.target  //当前被点击的元素。在事件委托中，指的是【子元素】。
+    var myEvent = new Event('myClick');//自定义事件
+    box1.addEventListener('myClick',function(){});
+    box1.dispatchEvent(myEvent);//注册事件，即触发
+
+14.new
+创建对象实例;_proto_指向;执行构造函数;返回对象
+
+15.同源策略
+“协议+域名+端口”三者相同，甚至两个不同的域名指向同一个IP地址，也非同源。
+同源策略限制以下几种行为：
+1.) Cookie、LocalStorage 和 IndexDB 无法读取
+2.) DOM 和 Js对象无法获得
+3.) AJAX 请求不能发送
+WebSocket协议跨域
+    var ws = new WebSocket("wss://echo.websocket.org");
+    ws.onopen = function(evt) { 
+        console.log("Connection open ..."); 
+        ws.send("Hello WebSockets!");
+    };
+
+    ws.onmessage = function(evt) {
+        console.log( "Received Message: " + evt.data);
+        ws.close();
+    };
+
+    ws.onclose = function(evt) {
+        console.log("Connection closed.");
+    };   
+
+16.安全问题
+    CSRF跨站请求伪造     token/referer
+    XSS跨域脚本          html entity编码，转成DOM对象，再过滤  对输入(和URL参数)进行过滤，对输出进行编码
+    是否需要登录获取cookie；利用漏洞请求API/注入js脚本
+
+17.Promise
+    const read = new Promise(
+        function (resolve, reject) {
+            // 一段耗时的异步操作
+            resolve('成功') // 数据处理完成
+            // reject('失败') // 数据处理出错
+        }
+    ).then(
+        (res) => {console.log(res)},  // 成功
+        (err) => {console.log(err)} // 失败
+    )
+    //代替.then：
+    async function readByAsync(){
+        let a1;
+        let a2;
+        let a3;
+        try{
+            a1 = await read('1.txt');
+            a2 = await read('2.txt');
+            a3 = await read('3.txt');
+        }catch(e){
+            //TODO handle the exception
+        }
+        console.log(a1);
+        console.log(a2);
+        console.log(a3);
+    }
+    readByAsync();
+    
+    18.typeof 返回类型？传什么返回什么？ toString()
+
+    19.querySelector是静态的，getelementbyid 是动态的
+
+    20.防抖和节流
+    function debounce(fn,time){
+        let timer = null
+        return function() {
+            if (timer) clearTimeOut(timer)
+            setTimeOut(() => {
+                fn()
+                timer = null
+            },time)
+        }
+    }
+    function throttle(fn,time) {
+        let timer = null
+        return function() {
+            if (!timer){
+                setTimeout(()=>{
+                    fn()
+                    timer = null
+                },time)
+            }
+        }
+    }
+
+21.map中途不能中断 
+Cookie的安全性？同源且未超时间才携带，还有httponly
+为什么要LocalStorage？更大，更久，相当于db不参与通信
+缓存还有哪些？
+微任务两个PROMISE一样么?
+大数据表格优化
+
+22.scoped实现
+穿透：两个style，>>>,/deep/
+
+23.
+arr = [1,2,3]
+var it = arr[Symbol.iterator]()
+it.next() //{value:1;done:false}
+
+同时generator函数也返回一个遍历器对象，可认为是一个状态机
+    //generator和yield的使用
+    var fns = [fn1,fn2,fn3]
+    function* step (fns) {
+        for (let i = 0; i<fn.length ; i++){
+            yield fns[i]()
+        }
+    }
+    let it = step(fns).next()
+    while(!it.done) it.next()
+    //继发读取url
+    var urls= []
+    async function jifa(urls){
+        for(let url of urls){
+             const promise = await fetch(url)
+             console.log(await promise.text())
+        }
+    }
+    //并发读取
+    async function bingfa(urlin){ //外层实现3并发
+        while(!urlin)
+            urls = urlin.splice(0,3)
+            //-----------------------------
+            var promises = urls.map(async item => { // map放进队列，async只影响内部
+                const res = await fetch(item)
+                return res.text()
+            })
+            for (let promise of promises){ //Promise.all(promises).then(()=>{})
+                console.log(await promise)
+            }
+            //-------------------------------
+            continue
+
+
+    }
+
+    24.检测数组
+    Array.isArray(arr)
+    instanceof 
+    arr.constructor === Array
+    Object.prototype.toString.call(arr) === "[object Array]"
+
+    25.VUE响应式
+    getter收集依赖/setter在数据变更时通知订阅者更新视图，Object.defineProperty创建
+    但是：无法检测到对象属性的新增或删除（set）；不能监听数组的变化（push/pop/shift/unshift/splice/sort/reverse七个方法）
+    vue3中利用Proxy实现数据读取和设置时进行拦截，性能差，无法兼容
+
+    26.实现call
+    function myCall(obj){
+        obj = obj||window
+        obj.fn = this
+        
+        let args = []
+        for(let i = 0; i<arguments.length ; i++){
+            args[i] = push(`arguments[${i}]`)
+        }
+        const result = eval(`obj.fn(${args})`)
+        delete obj.fn
+        return result
+    }
+
+    27.ajax
+    Ajax的原理简单来说通过XmlHttpRequest对象来向服务器发异步请求，
+    从服务器获得数据，然后用javascript来操作DOM而更新页面。
+
+    28.tplink
+    变量提升：
+        函数提升是整个代码块提升到它所在的作用域的最开始执行
+    CSS性能优化
+    http缓存：
+        强缓存：Pragma/Cache-Control/Expires：no-cache/max-age
+        协商缓存：ETag/Last-Modified   If-Not-Match/If-Modified-Since
+        <meta http-equiv="cache-control" content="no-cache">
+    VUE生命周期每个阶段干嘛
+        beforeCreated (注射和反应：created的时候数据已经和data属性进行绑定，就是已经watcher了)
+                        props => methods =>data => computed => watch; 
+        Created (做el绑定vm.$mount(el),
+                template作为模板编译成render函数，所以render函数选项 > template选项 > outer HTML)
+        beforeMounted (create vm.$el and replace el, 即内部数据表现)
+        mounted ()
+    nextick 在下次DOM更新循环结束之后执行延迟回调。在修改数据之后立即使用这个方法，获取更新后的 DOM
+    watch一导致多,computed;method
+    webpack原理
+
+    29.js性能优化
+    js的加载：defer，vue的按需加载
+    作用域：局部更快
+    对象：访问比变量慢
+    DOM操作：批量改，事件委托处理list

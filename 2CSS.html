@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel = "alternate stylesheet" type = "text/css" href = "b.css" title="第二种样式"></link>
+    <title>Document</title>
+    <style type="text/css">
+    
+        p{/*文本属性*/
+            /*  font: 400 14px/24px "宋体"; 连写400/700的加粗与否 */
+            font-size: 50px; 		/*字体大小*/
+            line-height: 30px;      /*行高*/
+            font-family: 幼圆,黑体; 	/*字体类型：如果没有幼圆就显示黑体，没有黑体就显示默认*/
+            font-style: italic ;		/*italic表示斜体，normal表示不倾斜*/
+            font-weight: bold;	/*粗体*/
+            font-variant: small-caps;  /*小写变大写*/
+        }
+        ul li{
+            list-style-image:url(images/2.gif);  /*列表项前设置为图片*/
+            margin-left:80px;  /*公有属性*/
+        }
+        #bg{
+			overflow: auto;/*超出的部分让浏览器自行解决&&visible&&hidden*/
+            opacity: 0.3;/*透明度*/
+            background-size: cover;/*cover：图片始终填充满容器，且保证长宽比不变。图片如果有超出部分，则超出部分会被隐藏。
+                                    contain：将图片完整地显示在容器中，且保证长宽比不变。可能会导致容器的部分区域留白。*/
+            background-origin: padding-box;
+            background-clip: content-box;/*超出部分剪掉*/
+            background-image: linear-gradient(to right,
+                yellow 0%,
+                red 40%,
+                green 70%,
+                blue 100%);
+            clip-path: circle(50px at 100px 100px);
+            /*  -webkit-: 谷歌 苹果
+                -moz-:火狐
+                -ms-：IE
+                -o-：欧朋*/
+            background: -webkit-linear-gradient(left, green, yellow);
+            background: -moz-linear-gradient(left, green, yellow);
+            background: -ms-linear-gradient(left, green, yellow);
+            background: -o-linear-gradient(left, green, yellow);
+            background: linear-gradient(left, green, yellow);
+
+            border-radius: 60px;
+            border-image: url("images/border.png") 27/20px round;
+		}
+        p:hover{
+            cursor: pointer;
+        }
+
+        p{/*float*/
+            text-indent: 2em;
+            display: inline;/*用于转换*/
+            float:left;/*float之后可全部看成div  标准流中的文字不会被浮动的盒子遮挡住 块浮动后收缩*/
+            clear:both;/*所在块高度为0会导致margin失效*/  /* 加高/clearboth/墙/overflowhidden */
+            /*浮动的兼容性问题*/
+            /*  ?微型盒子12px失效
+            *height: 10px; _font-size:0;下划线专有
+            *   ?浮动偏方失效
+            *overflow: hidden; _zoom:1;
+            *   ?IE6的双倍margin的bug
+            *margin和float设为反
+            */
+            /*margin计算的是border，父子若父无边界，容易出问题，最好padding*/
+        }
+
+        .position{
+            position: relative;
+            left: 50px;
+            top: 50px;
+        }
+        .position{
+            position: absolute;  /*绝对定位*//*固定定位fixed，IE6不支持*/
+            left: 10px;  /*横坐标*/
+            top/bottom: 20px;  /*页面左上，首屏左下*/
+            z-index: 1;/*先看父亲再看孩子*/
+            /*父相子绝，孩子根据父亲的border来，忽略padding*/
+        }
+        
+        /*选择器*/
+        div[title*="abc"]{ /*  ^：开头 $：结尾 *：包含  */
+            color: pink;
+        }
+        /*  E:nth-child(n)
+            E:nth-of-type(n)
+            E:empty
+            E:target
+        */
+        span::after{
+            content:"永不止步";/*注意配合使用*/
+            color:yellowgreen;
+        }
+        span::first-letter{...}
+    </style>
+</head>
+<body>
+    <img src="http://img.smyhvae.com/2015-10-03-css-18.png" alt = "文本CSS属性" style="filter:gray()"/><!--chrome滤镜无效-->
+    <div id = "bg">background</div>
+    <p>静态伪类:link:visited  动态伪类:hover:active:focus</p><!--对a有前4的顺序要求-->
+    a{} 定义的样式针对所有的超链接(包括锚点)
+    a:link{} 定义的样式针对所有写了href属性的超链接(不包括锚点)
+
+    <p>继承性</p>
+    文字样式的才有
+    <p>层叠性</p>
+    ID选择器 > 类选择器 > 标签选择器
+    外部样式表的ID选择器 > 内嵌样式表的标签选择器
+    <!-- 交集，并集，后代选择器 -->
+    <!-- 兼容问题：子代选择器>，序选择:first-child，下一个兄弟+ -->
+
+    <!--盒子-->
+    <div>IE盒子模型中，width 和 height 指的是内容区域+border+padding的宽度和高度</div>
+    文本级标签：p、span、a、b、i、u、em。
+    容器级标签：div、h系列、li、dt、dd。块级将p移下来
+    <div class="position"></div>
+    <div title="abc">属性选择器</div>
+    
+
+</body>
+</html>
